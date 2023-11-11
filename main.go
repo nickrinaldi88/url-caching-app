@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -18,19 +19,22 @@ func main() {
 	for {
 		fmt.Print("Enter URL ('type exit to quit'): ")
 		reader := bufio.NewReader(os.Stdin)
-		input, err := reader.ReadString('\n')
-		if input == "exit" {
+		input, _ := reader.ReadString('\n')
+		trimmedInput := strings.TrimSpace(input)
+		if trimmedInput == "exit" {
 			break
 		}
 		// check for specific url format
-		if err != nil {
-			fmt.Println("An error occured: Not a valid URL. Please try again")
-			return
-		}
-		input = strings.TrimSuffix(input, "\n")
-		fmt.Println(input)
 
-		cache := cache.makecache
+		if isValidURL(trimmedInput) {
+			fmt.Println("Valid URL: ", trimmedInput)
+			// cache.updateCache(trimmedInput)
+		} else {
+			fmt.Println("Invalid URL. Please try again. ")
+		}
+		fmt.Println(trimmedInput)
+
+		// cache := cache.makecache
 
 	}
 
@@ -43,5 +47,11 @@ func main() {
 	// fetch multiple urls at a time?
 }
 
-// error handling and logic
-// tests
+func isValidURL(url string) bool {
+
+	urlRegex := `^(http|https)://`
+
+	pattern := regexp.MustCompile(urlRegex)
+
+	return pattern.MatchString(url)
+}

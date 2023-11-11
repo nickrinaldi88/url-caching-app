@@ -1,31 +1,34 @@
 package cache
 
 // Implementation of the URL cache
-
 import (
-	"bufio"
+	"sync"
 )
 
-// add func to create a new cache using sync.Map
-func makecache(url string) {
-	cache := make(map[string]string)
-
-	cache[url] = url
-
-	fmt.Println("Here's the url", cache[url])
-
+// struct represents the metadata with a URL string + metadat payload
+type URLMetadata struct {
+	URL      string
+	MetaData string
 }
 
-func readcache(items map) map{
-
-	// read cache somehow
+// struct represents the cache
+type URLCache struct {
+	cache map[string]URLMetadata
+	mu    sync.RWMutex
 }
 
+func NewCache() *URLCache {
 
-// make new cache using sync.map
-// using a struct of url data
-// add expiring on cached URL
-// add func to check if url is in cache
-// if url in cache, return message or code
-// add func to add url and content to catch
-// if url not in cache, add url and content
+	return &URLCache{
+		cache: make(map[string]URLMetadata),
+	}
+}
+
+func (c *URLCache) AddURL(url string, metadata URLMetadata) {
+	c.mu.Lock()
+	// some logic
+	defer c.mu.Unlock()
+}
+
+// GetURLMetadata
+// Add Add+URL + get metadata to main.go
